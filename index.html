@@ -8,47 +8,129 @@
   --border: #e5e7eb;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #ffffff; color: var(--text); line-height: 1.5; }
+  background: #ffffff; color: var(--text); line-height: 1.5; overflow-x: hidden; }
 .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px 48px; }
 .header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-.header .tag { color: var(--muted); font-size: 0.9rem; margin-bottom: 12px; }
+.header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; color: var(--text); line-height: 1.25; }
+.header .tag { color: var(--muted); font-size: 0.9rem; margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.meta-item { display: inline-flex; align-items: baseline; gap: 4px; }
+.meta-item:not(:last-child)::after {
+  content: "·"; margin-left: 8px; color: #cbd5e1; font-weight: 400;
+}
 .header .tag strong { color: var(--text); }
 .header .intro { font-size: 0.95rem; color: var(--muted); max-width: 720px; }
 .pos { color: var(--green); }
 .neg { color: var(--red); }
 .section { margin-bottom: 36px; }
 .section > h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+.chart-box { border-radius: 8px; overflow: hidden; }
 .chart-box img { width: 100%; height: auto; display: block; }
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding: 0 4px; }
+.table-wrap.scroll { position: relative; }
+.table-wrap.scroll::after {
+  content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 28px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.95)); pointer-events: none;
+}
+.scroll-hint { display: none; font-size: 0.7rem; color: var(--muted); margin-bottom: 8px; }
 table { width: 100%; border-collapse: collapse; table-layout: fixed; background: #fff;
   font-size: 0.85rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 th { background: #f3f4f6; color: var(--text); font-size: 0.7rem; text-transform: uppercase;
-  letter-spacing: 0.05em; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  letter-spacing: 0.05em; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
 th.l, td.l { text-align: left; }
 th.c, td.c { text-align: center; }
 th.r, td.r { text-align: right; }
 td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6;
-  font-variant-numeric: tabular-nums; }
+  font-variant-numeric: tabular-nums; word-break: break-word; }
 tr:last-child td { border-bottom: none; }
 .year-row td { background: #f9fafb; text-align: center !important; font-weight: 600;
   font-size: 0.75rem; color: var(--muted); padding: 6px; }
-.note { font-size: 0.8rem; color: var(--muted); margin-top: 10px; }
+.note { font-size: 0.8rem; color: var(--muted); margin-top: 10px; line-height: 1.45; }
 .footer { text-align: center; color: var(--muted); font-size: 0.75rem; margin-top: 48px;
-  padding-top: 24px; border-top: 1px solid var(--border); }
+  padding-top: 24px; border-top: 1px solid var(--border); line-height: 1.5; }
 .total-row td { font-weight: 700; border-top: 2px solid var(--border); }
 .metrics-table { margin-bottom: 8px; }
 .metrics-table td { padding: 10px 12px; }
 .metrics-table tr:first-child td { border-top: none; }
 .label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .group-row td { background: #fff; font-weight: 600; color: var(--text); border-bottom: 1px solid var(--border); padding-top: 14px; }
+.final-row td { font-weight: 600; }
+.segments { min-width: 720px; }
+.monthly { min-width: 0; }
+
+@media (max-width: 768px) {
+  .wrap { padding: 20px 16px 36px; }
+  .header { margin-bottom: 24px; padding-bottom: 20px; }
+  .header h1 { font-size: 1.35rem; }
+  .header .tag { flex-direction: column; gap: 6px; font-size: 0.85rem; }
+  .meta-item:not(:last-child)::after { display: none; }
+  .header .intro { font-size: 0.9rem; }
+  .section { margin-bottom: 28px; }
+  .section > h2 { font-size: 0.95rem; margin-bottom: 12px; }
+  table { font-size: 0.8rem; }
+  th, td { padding: 8px 10px; }
+  .scroll-hint { display: block; }
+  .table-wrap.scroll::after { display: block; }
+}
+
+@media (max-width: 640px) {
+  .metrics-table colgroup, .metrics-table thead { display: none; }
+  .metrics-table, .metrics-table tbody, .metrics-table tr, .metrics-table td { display: block; width: 100%; }
+  .metrics-table tr {
+    margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 10px; background: #fafafa;
+  }
+  .metrics-table tr.group-row { background: #fff; border-color: #d1d5db; }
+  .metrics-table tr.final-row {
+    background: #f3f4f6; border-color: #d1d5db; margin-bottom: 0;
+  }
+  .metrics-table td {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; padding: 5px 0; border-bottom: 1px solid #eef2f7; text-align: right !important;
+  }
+  .metrics-table td:last-child { border-bottom: none; }
+  .metrics-table td.l { font-weight: 600; font-size: 0.95rem; padding-bottom: 8px;
+    margin-bottom: 4px; border-bottom: 1px solid var(--border); text-align: left !important; }
+  .metrics-table td[data-label]:not([data-label=""])::before {
+    content: attr(data-label); font-weight: 500; font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--muted); text-align: left; flex-shrink: 0;
+  }
+  .metrics-table tr.final-row td.l { border-bottom: none; margin-bottom: 0; padding-bottom: 4px; }
+  .metrics-table tr.final-row td[colspan] {
+    justify-content: flex-start; font-size: 1.1rem; font-weight: 700; padding-top: 0;
+  }
+  .metrics-table tr.final-row td[colspan]::before { display: none; }
+
+  .monthly colgroup, .monthly thead { display: none; }
+  .monthly, .monthly tbody, .monthly tr, .monthly td { display: block; width: 100%; }
+  .monthly tr {
+    margin-bottom: 10px; padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 10px; background: #fafafa;
+  }
+  .monthly td {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; padding: 4px 0; border-bottom: 1px solid #eef2f7; text-align: right !important;
+  }
+  .monthly td:last-child { border-bottom: none; }
+  .monthly td[data-label="Month"] {
+    font-weight: 600; font-size: 0.95rem; padding-bottom: 8px; margin-bottom: 4px;
+    border-bottom: 1px solid var(--border); text-align: left !important;
+  }
+  .monthly td[data-label]:not([data-label="Month"])::before {
+    content: attr(data-label); font-weight: 500; font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--muted); text-align: left;
+  }
+}
 </style></head><body>
 <div class="wrap">
 <div class="header">
   <h1>Mitra Portfolio — Performance Report</h1>
-  <p class="tag"><strong>Period:</strong> 26 Jun 2025 – 26 Jun 2026 &nbsp;·&nbsp;
-  <strong>Opening balance (26 Jun 2025):</strong> $10,217 &nbsp;·&nbsp; <strong>Updated:</strong> 28 June 2026</p>
+  <p class="tag">
+    <span class="meta-item"><strong>Period:</strong> 26 Jun 2025 – 26 Jun 2026</span>
+    <span class="meta-item"><strong>Opening (26 Jun 2025):</strong> $10,217</span>
+    <span class="meta-item"><strong>Updated:</strong> 30 June 2026</span>
+  </p>
   <p class="intro">Strategy 1 and Strategy 2 on one shared account. Equity drawdown includes open-position floating P&amp;L from tester snapshots.</p>
 </div>
 
@@ -62,23 +144,23 @@ tr:last-child td { border-bottom: none; }
       <th class="c">Trades</th><th class="c">Win Rate</th><th class="r">Equity DD</th>
     </tr></thead>
     <tbody>
-      <tr class="group-row"><td class="l">Portfolio</td>
-        <td class="r pos">$+14,895</td><td class="r">145.8%</td>
-        <td class="r">1.84</td><td class="c">1,529</td>
-        <td class="c">56%</td>
-        <td class="r neg">8.9%</td></tr>
-      <tr><td class="l">Strategy 1</td>
-        <td class="r pos">$+7,967</td><td class="r">78.7%</td>
-        <td class="r">1.68</td><td class="c">1,075</td>
-        <td class="c">48%</td>
-        <td class="r neg">7.7%</td></tr>
-      <tr><td class="l">Strategy 2</td>
-        <td class="r pos">$+6,928</td><td class="r">68.6%</td>
-        <td class="r">2.15</td><td class="c">454</td>
-        <td class="c">74%</td>
-        <td class="r neg">10.9%</td></tr>
-      <tr><td class="l label">Final balance</td>
-        <td class="r" colspan="6">$25,112</td></tr>
+      <tr class="group-row"><td class="l" data-label="">Portfolio</td>
+        <td class="r pos" data-label="Net Profit">$+14,895</td><td class="r" data-label="Return">145.8%</td>
+        <td class="r" data-label="Profit Factor">1.84</td><td class="c" data-label="Trades">1,529</td>
+        <td class="c" data-label="Win Rate">56%</td>
+        <td class="r neg" data-label="Equity DD">8.9%</td></tr>
+      <tr><td class="l" data-label="">Strategy 1</td>
+        <td class="r pos" data-label="Net Profit">$+7,967</td><td class="r" data-label="Return">78.7%</td>
+        <td class="r" data-label="Profit Factor">1.68</td><td class="c" data-label="Trades">1,075</td>
+        <td class="c" data-label="Win Rate">48%</td>
+        <td class="r neg" data-label="Equity DD">7.7%</td></tr>
+      <tr><td class="l" data-label="">Strategy 2</td>
+        <td class="r pos" data-label="Net Profit">$+6,928</td><td class="r" data-label="Return">68.6%</td>
+        <td class="r" data-label="Profit Factor">2.15</td><td class="c" data-label="Trades">454</td>
+        <td class="c" data-label="Win Rate">74%</td>
+        <td class="r neg" data-label="Equity DD">10.9%</td></tr>
+      <tr class="final-row"><td class="l label" data-label="">Final balance</td>
+        <td class="r" colspan="6" data-label="">$25,112</td></tr>
     </tbody>
   </table>
   </div>
@@ -92,11 +174,12 @@ tr:last-child td { border-bottom: none; }
   <table class="monthly">
     <colgroup><col style="width:28%"><col style="width:24%"><col style="width:24%"><col style="width:24%"></colgroup>
     <thead><tr><th class="l">Month</th><th class="c">Trades</th><th class="c">Win Rate</th><th class="r">Profit</th></tr></thead>
-    <tbody><tr><td class="l">2025-06</td><td class="c">17</td><td class="c">76%</td><td class="r pos">$+262</td></tr><tr><td class="l">2025-07</td><td class="c">143</td><td class="c">57%</td><td class="r pos">$+552</td></tr><tr><td class="l">2025-08</td><td class="c">128</td><td class="c">51%</td><td class="r pos">$+66</td></tr><tr><td class="l">2025-09</td><td class="c">169</td><td class="c">57%</td><td class="r pos">$+1,547</td></tr><tr><td class="l">2025-10</td><td class="c">164</td><td class="c">53%</td><td class="r pos">$+705</td></tr><tr><td class="l">2025-11</td><td class="c">30</td><td class="c">83%</td><td class="r pos">$+768</td></tr><tr><td class="l">2025-12</td><td class="c">147</td><td class="c">49%</td><td class="r pos">$+709</td></tr><tr><td class="l">2026-01</td><td class="c">154</td><td class="c">57%</td><td class="r pos">$+4,753</td></tr><tr><td class="l">2026-02</td><td class="c">91</td><td class="c">60%</td><td class="r pos">$+1,099</td></tr><tr><td class="l">2026-03</td><td class="c">106</td><td class="c">75%</td><td class="r pos">$+3,103</td></tr><tr><td class="l">2026-04</td><td class="c">127</td><td class="c">54%</td><td class="r neg">-$478</td></tr><tr><td class="l">2026-05</td><td class="c">140</td><td class="c">53%</td><td class="r neg">-$306</td></tr><tr><td class="l">2026-06</td><td class="c">113</td><td class="c">46%</td><td class="r pos">$+2,113</td></tr></tbody></table>
+    <tbody><tr><td class="l" data-label="Month">2025-06</td><td class="c" data-label="Trades">17</td><td class="c" data-label="Win Rate">76%</td><td class="r pos" data-label="Profit">$+262</td></tr><tr><td class="l" data-label="Month">2025-07</td><td class="c" data-label="Trades">143</td><td class="c" data-label="Win Rate">57%</td><td class="r pos" data-label="Profit">$+552</td></tr><tr><td class="l" data-label="Month">2025-08</td><td class="c" data-label="Trades">128</td><td class="c" data-label="Win Rate">51%</td><td class="r pos" data-label="Profit">$+66</td></tr><tr><td class="l" data-label="Month">2025-09</td><td class="c" data-label="Trades">169</td><td class="c" data-label="Win Rate">57%</td><td class="r pos" data-label="Profit">$+1,547</td></tr><tr><td class="l" data-label="Month">2025-10</td><td class="c" data-label="Trades">164</td><td class="c" data-label="Win Rate">53%</td><td class="r pos" data-label="Profit">$+705</td></tr><tr><td class="l" data-label="Month">2025-11</td><td class="c" data-label="Trades">30</td><td class="c" data-label="Win Rate">83%</td><td class="r pos" data-label="Profit">$+768</td></tr><tr><td class="l" data-label="Month">2025-12</td><td class="c" data-label="Trades">147</td><td class="c" data-label="Win Rate">49%</td><td class="r pos" data-label="Profit">$+709</td></tr><tr><td class="l" data-label="Month">2026-01</td><td class="c" data-label="Trades">154</td><td class="c" data-label="Win Rate">57%</td><td class="r pos" data-label="Profit">$+4,753</td></tr><tr><td class="l" data-label="Month">2026-02</td><td class="c" data-label="Trades">91</td><td class="c" data-label="Win Rate">60%</td><td class="r pos" data-label="Profit">$+1,099</td></tr><tr><td class="l" data-label="Month">2026-03</td><td class="c" data-label="Trades">106</td><td class="c" data-label="Win Rate">75%</td><td class="r pos" data-label="Profit">$+3,103</td></tr><tr><td class="l" data-label="Month">2026-04</td><td class="c" data-label="Trades">127</td><td class="c" data-label="Win Rate">54%</td><td class="r neg" data-label="Profit">-$478</td></tr><tr><td class="l" data-label="Month">2026-05</td><td class="c" data-label="Trades">140</td><td class="c" data-label="Win Rate">53%</td><td class="r neg" data-label="Profit">-$306</td></tr><tr><td class="l" data-label="Month">2026-06</td><td class="c" data-label="Trades">113</td><td class="c" data-label="Win Rate">46%</td><td class="r pos" data-label="Profit">$+2,113</td></tr></tbody></table>
   </div>
 </div>
 <div class="section"><h2>Strategy 1 — Period Breakdown</h2>
-  <div class="table-wrap">
+  <p class="scroll-hint">Swipe table horizontally →</p>
+  <div class="table-wrap scroll">
   <table class="segments">
     <colgroup><col style="width:4%"><col style="width:18%"><col style="width:11%"><col style="width:9%">
       <col style="width:9%"><col style="width:9%"><col style="width:10%"><col style="width:13%"><col style="width:13%"></colgroup>
@@ -201,5 +284,5 @@ tr:last-child td { border-bottom: none; }
   </tbody></table>
   </div>
 </div>
-<p class="footer">Mitra · 28 June 2026 · Confidential · Backtest results; past performance does not guarantee future results.</p>
+<p class="footer">Mitra · 30 June 2026 · Confidential · Backtest results; past performance does not guarantee future results.</p>
 </div></body></html>
